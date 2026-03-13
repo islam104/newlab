@@ -1,0 +1,258 @@
+### HR Management System API Requests
+
+### Environment Variables
+# @name baseUrl = http://localhost:8080/api
+
+### Security workflow (JWT access + refresh)
+### 0. Register user (you can pass any roles except ROLE_ADMIN)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "candidate1",
+  "email": "candidate1@example.com",
+  "password": "StrongPass!23",
+  "roles": ["ROLE_CANDIDATE", "ROLE_HR", "ROLE_INTERVIEWER"]
+}
+
+### 1) Login: get access + refresh token pair
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "candidate1",
+  "password": "StrongPass!23"
+}
+
+> {%
+  client.global.set("accessToken", response.body.accessToken);
+  client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### 2) Protected endpoint with access token (must be 200)
+GET {{baseUrl}}/vacancies
+Authorization: Bearer {{accessToken}}
+
+### 3) Refresh token (get new pair)
+# @name refreshOnce
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+> {%
+  client.global.set("newAccessToken", response.body.accessToken);
+  client.global.set("newRefreshToken", response.body.refreshToken);
+%}
+
+### 4) Reuse old refresh token (must be 401/403)
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 5) (DB check) user_sessions statuses:
+### old session -> REFRESHED, new session -> ACTIVE
+
+### 1. Create Vacancy
+POST {{baseUrl}}/vacancies
+Content-Type: application/json
+
+{
+  "title": "Senior Java Developer",
+  "description": "We are looking for an experienced Java developer with Spring Boot experience.",
+  "location": "Moscow",
+  "salary": 250000,
+  "status": "ACTIVE",
+  "hrManager": "Ivan Petrov"
+}
+
+### 2. Get All Vacancies
+GET {{baseUrl}}/vacancies
+
+### 3. Get Active Vacancies
+GET {{baseUrl}}/vacancies/active
+
+### 4. Create Candidate
+POST {{baseUrl}}/candidates
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "john.smith@example.com",
+  "phone": "+7 (999) 123-45-67",
+  "experience": "5 years of Java development",
+  "skills": "Java, Spring Boot, PostgreSQL, Docker",
+  "resumeUrl": "https://example.com/resume/john-smith.pdf"
+}
+
+### 5. Get All Candidates
+GET {{baseUrl}}/candidates
+
+### 6. Apply for Vacancy (Business Operation 1)
+POST {{baseUrl}}/recruitment/apply
+Content-Type: application/json
+
+{
+  "vacancyId": 1,
+  "candidateId": 1,
+  "coverLetter": "I am very interested in this position and believe my skills match your requirements."
+}
+
+### 7. Get All Applications
+GET {{baseUrl}}/applications
+
+### 8. Schedule Interview (Business Operation 2)
+POST {{baseUrl}}/recruitment/schedule-interview
+Content-Type: application/json
+
+{
+  "applicationId": 1,
+  "interviewer": "Maria Ivanova",
+  "scheduledTime": "2026-02-25T14:00:00",
+  "durationMinutes": 60
+}
+
+### 9. Get All Interviews
+GET {{baseUrl}}/interviews
+
+### 10. Get Upcoming Interviews
+GET {{baseUrl}}/interviews/upcoming
+
+### 11. Update Interview Status (Complete Interview)
+PUT {{baseUrl}}/interviews/1
+Content-Type: application/json
+
+{
+  "applicationId": 1,
+  "interviewer": "Maria Ivanova",
+  "scheduledTime": "2026-02-25T14:00:00",
+  "durationMinutes": 60,
+  "status": "COMPLETED",
+  "type": "TECHNICAL",
+  "notes": "Candidate showed strong technical skills"
+}
+
+### 12. Update Application Status (After Interview)
+PUT {{baseUrl}}/applications/1
+Content-Type: application/json
+
+{
+  "vacancyId": 1,
+  "candidateId": 1,
+  "coverLetter": "I am very interested in this position and believe my skills match your requirements.",
+  "status": "INTERVIEW_COMPLETED"
+}
+
+### 13. Create Offer (Business Operation 3)
+POST {{baseUrl}}/recruitment/create-offer
+Content-Type: application/json
+
+{
+  "applicationId": 1,
+  "salary": 260000,
+  "startDate": "2026-03-15",
+  "terms": "Standard employment contract with 20 days vacation"
+}
+
+### 14. Get All Offers
+GET {{baseUrl}}/offers
+
+### 15. Get Pending Offers
+GET {{baseUrl}}/offers/pending
+
+### 16. Accept Offer (Business Operation 4)
+POST {{baseUrl}}/recruitment/accept-offer/1
+
+### 17. Get Vacancy Statistics (Business Operation 5)
+GET {{baseUrl}}/recruitment/vacancy/1/statistics
+
+### 18. Search Candidates by Skill
+GET {{baseUrl}}/candidates/skill/Java
+
+### 19. Search Vacancies by Keyword
+GET {{baseUrl}}/vacancies/search?keyword=Java
+
+### 20. Get Applications by Vacancy
+GET {{baseUrl}}/applications/vacancy/1
+
+### 21. Get Applications by Candidate
+GET {{baseUrl}}/applications/candidate/1
+
+### 22. Get Offers by Candidate
+GET {{baseUrl}}/offers/candidate/1
+
+### 23. Create Another Candidate for Testing
+POST {{baseUrl}}/candidates
+Content-Type: application/json
+
+{
+  "firstName": "Alice",
+  "lastName": "Johnson",
+  "email": "alice.johnson@example.com",
+  "phone": "+7 (999) 987-65-43",
+  "experience": "3 years of Java development",
+  "skills": "Java, Spring, MySQL, Git",
+  "resumeUrl": "https://example.com/resume/alice-johnson.pdf"
+}
+
+### 24. Second Candidate Applies for Same Vacancy
+POST {{baseUrl}}/recruitment/apply
+Content-Type: application/json
+
+{
+  "vacancyId": 1,
+  "candidateId": 2,
+  "coverLetter": "I would like to apply for this position as I have relevant experience."
+}
+
+### 25. Try to Apply Again (Should Fail - Duplicate Application)
+POST {{baseUrl}}/recruitment/apply
+Content-Type: application/json
+
+{
+  "vacancyId": 1,
+  "candidateId": 1,
+  "coverLetter": "Second attempt to apply"
+}
+
+### 26. Create Second Vacancy
+POST {{baseUrl}}/vacancies
+Content-Type: application/json
+
+{
+  "title": "Middle Java Developer",
+  "description": "Looking for a middle-level Java developer.",
+  "location": "St. Petersburg",
+  "salary": 180000,
+  "status": "ACTIVE",
+  "hrManager": "Elena Sidorova"
+}
+
+### 27. Schedule Conflicting Interview (Should Fail)
+POST {{baseUrl}}/recruitment/schedule-interview
+Content-Type: application/json
+
+{
+  "applicationId": 2,
+  "interviewer": "Maria Ivanova",
+  "scheduledTime": "2026-02-25T14:30:00",
+  "durationMinutes": 60
+}
+
+### 28. Create Second Offer for Same Candidate (Should Fail)
+POST {{baseUrl}}/recruitment/create-offer
+Content-Type: application/json
+
+{
+  "applicationId": 2,
+  "salary": 200000,
+  "startDate": "2026-03-20",
+  "terms": "Standard contract"
+}

@@ -1,0 +1,9 @@
+/target/
+/.idea/
+*.iml
+.DS_Store
+/.env
+/.secrets/
+*.p12
+*.crt
+*.key
