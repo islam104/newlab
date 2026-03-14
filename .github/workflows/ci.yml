@@ -37,11 +37,12 @@ jobs:
           exit 1
       - name: Run tests
         env:
-          DB_URL: jdbc:postgresql://localhost:5432/newsem_db
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          JWT_ACCESS_SECRET: wrz9XyUgLd+fcAEU+E4yjjdg9ec+icxPJ4B/IUnoViI=
-          JWT_REFRESH_SECRET: U+/ajsL24zZRHCaUUv8ZZ1S21VHXzKjIff8uXG5w1Os=
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          TICKET_SIGNING_SECRET: ${{ secrets.TICKET_SIGNING_SECRET }}
         run: mvn -B test
 
   build:
