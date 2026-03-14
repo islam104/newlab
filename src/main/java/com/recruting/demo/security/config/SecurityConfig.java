@@ -56,67 +56,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/register", "/auth/login", "/auth/refresh", "/auth/csrf")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/recruitment/apply", "/api/recruitment/accept-offer/**")
-                        .hasAnyRole("CANDIDATE", "ADMIN")
-
-                        .requestMatchers(HttpMethod.POST, "/api/recruitment/schedule-interview")
-                        .hasAnyRole("INTERVIEWER", "HR", "ADMIN")
-
-                        .requestMatchers(HttpMethod.POST, "/api/recruitment/create-offer")
-                        .hasAnyRole("HR", "ADMIN")
-
                         .requestMatchers(HttpMethod.POST, "/api/licenses/create")
                         .hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/licenses/activate", "/api/licenses/check", "/api/licenses/renew")
                         .authenticated()
-
-                        .requestMatchers(HttpMethod.GET, "/api/recruitment/vacancy/{vacancyId}/statistics")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/vacancies/**")
-                        .authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/vacancies/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/vacancies/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/vacancies/**")
-                        .hasAnyRole("HR", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/candidates/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/candidates/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/candidates/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/candidates/**")
-                        .hasAnyRole("HR", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/applications/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN", "CANDIDATE")
-                        .requestMatchers(HttpMethod.POST, "/api/applications/**")
-                        .hasAnyRole("HR", "ADMIN", "CANDIDATE")
-                        .requestMatchers(HttpMethod.PUT, "/api/applications/**")
-                        .hasAnyRole("HR", "ADMIN", "CANDIDATE")
-                        .requestMatchers(HttpMethod.DELETE, "/api/applications/**")
-                        .hasAnyRole("HR", "ADMIN", "CANDIDATE")
-
-                        .requestMatchers(HttpMethod.GET, "/api/interviews/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/interviews/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/interviews/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/interviews/**")
-                        .hasAnyRole("HR", "ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/offers/**")
-                        .hasAnyRole("HR", "INTERVIEWER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/offers/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/offers/**")
-                        .hasAnyRole("HR", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/offers/**")
-                        .hasAnyRole("HR", "ADMIN")
 
                         .anyRequest().authenticated()
                 );
