@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "app_users")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,17 +31,29 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Column(nullable = false)
-    private boolean enabled = true;
+    private String role;
+
+    @Column(name = "is_account_expired", nullable = false)
+    private boolean accountExpired = false;
+
+    @Column(name = "is_account_locked", nullable = false)
+    private boolean accountLocked = false;
+
+    @Column(name = "is_credentials_expired", nullable = false)
+    private boolean credentialsExpired = false;
+
+    @Column(name = "is_disabled", nullable = false)
+    private boolean disabled = false;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

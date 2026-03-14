@@ -46,8 +46,12 @@ public class RegistrationService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setEnabled(true);
+        user.setDisabled(false);
+        user.setAccountExpired(false);
+        user.setAccountLocked(false);
+        user.setCredentialsExpired(false);
         user.setRoles(rolesToAssign);
+        user.setRole(rolesToAssign.iterator().next().getName().name());
 
         AppUser saved = appUserRepository.save(user);
 

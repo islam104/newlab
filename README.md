@@ -44,6 +44,13 @@ mvn spring-boot:run
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
 
+## Лицензирование (основные операции)
+
+- `POST /api/licenses/create` (админ)
+- `POST /api/licenses/activate`
+- `POST /api/licenses/check`
+- `POST /api/licenses/renew`
+
 ## PostgreSQL
 
 Пример подключения (используется по умолчанию):
@@ -88,6 +95,7 @@ export TLS_KEYSTORE_PATH='./.secrets/tls/server-keystore.p12'
 - `DB_URL`, `DB_USER`, `DB_PASSWORD`
 - `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`
 - `TLS_KEYSTORE_PATH`, `TLS_KEYSTORE_PASSWORD`, `TLS_KEY_ALIAS`, `TLS_PORT`
+- `TICKET_SIGNING_SECRET`, `TICKET_TTL_SECONDS`
 
 ## Теория: UML-диаграммы (кратко)
 

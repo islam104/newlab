@@ -25,7 +25,10 @@ public class AppUserDetailsService implements UserDetailsService {
 
         return User.withUsername(appUser.getUsername())
                 .password(appUser.getPasswordHash())
-                .disabled(!appUser.isEnabled())
+                .accountExpired(appUser.isAccountExpired())
+                .accountLocked(appUser.isAccountLocked())
+                .credentialsExpired(appUser.isCredentialsExpired())
+                .disabled(appUser.isDisabled())
                 .authorities(appUser.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                         .collect(Collectors.toSet()))

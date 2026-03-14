@@ -14,7 +14,7 @@
 	<artifactId>newsem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>newsem</name>
-	<description>NewSEM server project</description>
+	<description>NewSEM server project</description>git remote add origin
 
 	<properties>
 		<java.version>21</java.version>

@@ -52,7 +52,7 @@ public class TokenPairService {
         }
 
         AppUser user = appUserRepository.findById(userId)
-                .filter(AppUser::isEnabled)
+                .filter(u -> !u.isDisabled())
                 .orElseThrow(() -> new BadCredentialsException("Пользователь не найден или отключен"));
 
         UserSession oldSession = userSessionRepository.findById(sessionId)
