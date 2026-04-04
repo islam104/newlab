@@ -33,7 +33,7 @@ public class TokenPairService {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        AppUser user = appUserRepository.findByUsernameOrEmail(authentication.getName(), authentication.getName())
+        AppUser user = appUserRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new BadCredentialsException("Пользователь не найден"));
 
         UserSession session = createActiveSession(user);

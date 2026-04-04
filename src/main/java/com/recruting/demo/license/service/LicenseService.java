@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -147,9 +148,12 @@ public class LicenseService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
-        License license = licenseRepository.findActiveByDeviceUserAndProduct(
-                device.getId(), user, product, LocalDateTime.now())
-                .orElseThrow(() -> new BadRequestException("License not found"));
+        List<License> activeLicenses = licenseRepository.findActiveByDeviceUserAndProduct(
+                device.getId(), user, product, LocalDateTime.now());
+        if (activeLicenses.isEmpty()) {
+            throw new BadRequestException("License not found");
+        }
+        License license = activeLicenses.get(0);
 
         return buildTicketResponse(license, device);
     }

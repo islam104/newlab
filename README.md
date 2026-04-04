@@ -51,6 +51,37 @@ mvn spring-boot:run
 - `POST /api/licenses/check`
 - `POST /api/licenses/renew`
 
+## ЭЦП тикета лицензии
+
+Подпись тикета выполняется по схеме:
+- canonical JSON (детерминированная сериализация)
+- UTF-8 байты канонического JSON
+- `SHA256withRSA`
+- Base64-представление подписи
+
+### Генерация keystore и сертификата
+
+```bash
+chmod +x ./scripts/signature/generate-signature-keystore.sh
+./scripts/signature/generate-signature-keystore.sh
+```
+
+По умолчанию скрипт создаёт:
+- `./.secrets/signature/ticket-signing.p12` (приватный ключ + сертификат)
+- `./.secrets/signature/ticket-signing.crt` (публичный сертификат)
+- `./.secrets/signature/ticket-signing.crt.base64` (значение для CI/CD variable)
+
+### Переменные окружения для подписи
+
+- `SIGNATURE_KEYSTORE_PATH`
+- `SIGNATURE_KEYSTORE_TYPE` (обычно `PKCS12`)
+- `SIGNATURE_KEYSTORE_PASSWORD`
+- `SIGNATURE_KEY_ALIAS`
+- `SIGNATURE_KEY_PASSWORD`
+- `SIGNATURE_ALGORITHM` (по умолчанию `SHA256withRSA`)
+- `SIGNATURE_PUBLIC_CERT_BASE64` (Base64 от X.509 сертификата с публичным ключом)
+- `TICKET_TTL_SECONDS`
+
 ## PostgreSQL
 
 Пример подключения (используется по умолчанию):
@@ -95,7 +126,10 @@ export TLS_KEYSTORE_PATH='./.secrets/tls/server-keystore.p12'
 - `DB_URL`, `DB_USER`, `DB_PASSWORD`
 - `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`
 - `TLS_KEYSTORE_PATH`, `TLS_KEYSTORE_PASSWORD`, `TLS_KEY_ALIAS`, `TLS_PORT`
-- `TICKET_SIGNING_SECRET`, `TICKET_TTL_SECONDS`
+- `SIGNATURE_KEYSTORE_PATH`, `SIGNATURE_KEYSTORE_TYPE`
+- `SIGNATURE_KEYSTORE_PASSWORD`, `SIGNATURE_KEY_ALIAS`, `SIGNATURE_KEY_PASSWORD`
+- `SIGNATURE_PUBLIC_CERT_BASE64` (рекомендуется в `Repository Variables`, не в `Secrets`)
+- `TICKET_TTL_SECONDS`
 
 ## Теория: UML-диаграммы (кратко)
 

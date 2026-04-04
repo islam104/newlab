@@ -60,7 +60,7 @@ public class LicenseController {
         if (userDetails == null) {
             throw new BadRequestException("User not authenticated");
         }
-        AppUser user = appUserRepository.findByUsernameOrEmail(userDetails.getUsername(), userDetails.getUsername())
+        AppUser user = appUserRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new BadRequestException("User not found"));
         return user.getId();
     }

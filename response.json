@@ -1,0 +1,12 @@
+{
+  "ticket": {
+    "serverDate": "2026-03-27T15:53:47.774331Z",
+    "ttlSeconds": 300,
+    "activationDate": "2026-03-13T17:42:21.164808",
+    "endingDate": "2026-04-12T17:42:21.164808",
+    "userId": 1,
+    "deviceId": "6af9646e-e0b4-480c-90d4-8d1b366a66bf",
+    "blocked": false
+  },
+  "signature": "SBlx7v8wc5/75K99e3xTG2GrkUpkdXcgUM9zM9hWSvWb5O0FWOkdBrp9vRv7G4Sggh9eQCibBJgDR2VnmKTLcc0xGMKc0xccG1Cjr5lj6/VOQMv9V90nzrmbkipStdu4G0/1rtSsPPjnmLxqa4PZDMq3iJ/8WceDUBtFoLxYe8rNOGXoKYKGuUaXaMB/F6BWAs7cdL+q3jPBz3aGUsJiY/UNP2jer+1E9/EXBG7zzKOvBHU6SXA6uUSauSNp5YVInVni6J5FSYxPJiZ3S8cZVre3/qArupVttpjmJPtJtdBeZNvSMgZ/zI9YKI1cTH1vPpqfeq/Rz0u9lAmKfWIgK6XoANQJLN+VtwLUlvM+vW1f2yKiQV3EYxdY6DOfx+BV8P4VCXrEjjAP7uCJ3G6MtABAqaC/nL6n6fqsLxLH8TDBKdOCIJMdd8cV5iW0WpOv+4LAUv9XvYLI2ZIG03HnC1gNOoHTCX1lQ7Y/+YnaCLfFrKwEi4BapNaaucf3u7Rx"
+}

@@ -7,3 +7,5 @@
 *.p12
 *.crt
 *.key
+!src/test/resources/signature/*.p12
+!src/test/resources/signature/*.crt
