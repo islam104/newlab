@@ -49,7 +49,11 @@ jobs:
           SIGNATURE_KEY_PASSWORD: ${{ secrets.SIGNATURE_KEY_PASSWORD }}
           SIGNATURE_PUBLIC_CERT_BASE64: ${{ vars.SIGNATURE_PUBLIC_CERT_BASE64 }}
           SIGNATURE_ALGORITHM: SHA256withRSA
-        run: mvn -B test
+        run: |
+          test -n "$SIGNATURE_PUBLIC_CERT_BASE64"
+          echo "SIGNATURE_PUBLIC_CERT_BASE64 length: ${#SIGNATURE_PUBLIC_CERT_BASE64}"
+          echo "$SIGNATURE_PUBLIC_CERT_BASE64" | base64 --decode >/dev/null
+          mvn -B test
 
   build:
     runs-on: ubuntu-latest
