@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class LicenseTicketSignatureApiIT {
+class LicenseTicketSignatureApiTest {
 
     @Autowired
     private MockMvc mockMvc;
