@@ -1,10 +1,12 @@
 package com.recruting.demo.signature;
 
 import org.springframework.stereotype.Service;
+import ru.mfa.signature.JsonCanonicalizer;
 
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.Signature;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
@@ -23,7 +25,7 @@ public class SigningService {
     }
 
     public String sign(Object payload) {
-        byte[] canonicalBytes = canonicalizer.canonicalize(payload);
+        byte[] canonicalBytes = canonicalizer.canonizeJson(payload).getBytes(StandardCharsets.UTF_8);
         PrivateKey privateKey = keyProvider.getPrivateKey();
 
         try {

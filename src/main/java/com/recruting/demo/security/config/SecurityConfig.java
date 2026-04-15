@@ -60,6 +60,18 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/licenses/activate", "/api/licenses/check", "/api/licenses/renew")
                         .authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/malware-signatures")
+                        .hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/malware-signatures/**")
+                        .hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/malware-signatures/**")
+                        .hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/malware-signatures/*/history", "/api/malware-signatures/*/audit")
+                        .hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/malware-signatures", "/api/malware-signatures/increment")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/malware-signatures/by-ids")
+                        .authenticated()
 
                         .anyRequest().authenticated()
                 );

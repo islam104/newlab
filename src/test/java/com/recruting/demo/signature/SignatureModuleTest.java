@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.recruting.demo.license.dto.Ticket;
 import com.recruting.demo.license.service.TicketSignerService;
 import org.junit.jupiter.api.Test;
+import ru.mfa.signature.JsonCanonicalizer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -25,11 +25,11 @@ class SignatureModuleTest {
     void canonicalizerBuildsDeterministicJson() {
         JsonCanonicalizer canonicalizer = new JsonCanonicalizer(configuredMapper());
 
-        byte[] first = canonicalizer.canonicalize(Map.of("b", 2, "a", "x", "n", 1.2300));
-        byte[] second = canonicalizer.canonicalize(Map.of("n", 1.23, "a", "x", "b", 2));
+        String first = canonicalizer.canonizeJson(Map.of("b", 2, "a", "x", "n", 1.2300));
+        String second = canonicalizer.canonizeJson(Map.of("n", 1.23, "a", "x", "b", 2));
 
-        assertEquals(new String(first, StandardCharsets.UTF_8), new String(second, StandardCharsets.UTF_8));
-        assertEquals("{\"a\":\"x\",\"b\":2,\"n\":1.23}", new String(first, StandardCharsets.UTF_8));
+        assertEquals(first, second);
+        assertEquals("{\"a\":\"x\",\"b\":2,\"n\":1.23}", first);
     }
 
     @Test

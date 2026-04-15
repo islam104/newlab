@@ -1,12 +1,14 @@
 package com.recruting.demo.signature;
 
 import org.springframework.stereotype.Service;
+import ru.mfa.signature.JsonCanonicalizer;
 
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
@@ -26,7 +28,7 @@ public class SignatureVerificationService {
     }
 
     public boolean verify(Object payload, String base64Signature) {
-        byte[] canonicalBytes = canonicalizer.canonicalize(payload);
+        byte[] canonicalBytes = canonicalizer.canonizeJson(payload).getBytes(StandardCharsets.UTF_8);
         byte[] signatureBytes;
         try {
             signatureBytes = Base64.getDecoder().decode(base64Signature);
