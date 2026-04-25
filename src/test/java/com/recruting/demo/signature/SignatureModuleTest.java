@@ -83,6 +83,29 @@ class SignatureModuleTest {
         assertFalse(verificationByExternalCert.verify(tampered, signature));
     }
 
+    @Test
+    void rawByteSignatureCanBeCreatedForBinaryManifest() throws Exception {
+        SignatureProperties properties = new SignatureProperties();
+        properties.setKeyStorePath("classpath:signature/test-signing.p12");
+        properties.setKeyStoreType("PKCS12");
+        properties.setKeyStorePassword("changeit");
+        properties.setKeyAlias("test-signing");
+        properties.setKeyPassword("changeit");
+        properties.setAlgorithm("SHA256withRSA");
+
+        JsonCanonicalizer canonicalizer = new JsonCanonicalizer(configuredMapper());
+        SignatureKeyProvider keyProvider = new SignatureKeyProvider(properties);
+        SigningService signingService = new SigningService(keyProvider, canonicalizer, properties);
+
+        byte[] payload = "binary-manifest".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] signatureBytes = signingService.sign(payload);
+
+        java.security.Signature verifier = java.security.Signature.getInstance(properties.getAlgorithm());
+        verifier.initVerify(keyProvider.getPublicKey());
+        verifier.update(payload);
+        assertTrue(verifier.verify(signatureBytes));
+    }
+
     private ObjectMapper configuredMapper() {
         return JsonMapper.builder()
                 .findAndAddModules()

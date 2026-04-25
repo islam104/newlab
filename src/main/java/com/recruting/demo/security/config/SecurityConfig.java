@@ -72,6 +72,10 @@ public class SecurityConfig {
                         .authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/malware-signatures/by-ids")
                         .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/binary/signatures/full", "/api/binary/signatures/increment")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/binary/signatures/by-ids")
+                        .authenticated()
 
                         .anyRequest().authenticated()
                 );
