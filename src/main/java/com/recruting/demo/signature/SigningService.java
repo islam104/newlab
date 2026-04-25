@@ -26,13 +26,17 @@ public class SigningService {
 
     public String sign(Object payload) {
         byte[] canonicalBytes = canonicalizer.canonizeJson(payload).getBytes(StandardCharsets.UTF_8);
+        return Base64.getEncoder().encodeToString(sign(canonicalBytes));
+    }
+
+    public byte[] sign(byte[] payloadBytes) {
         PrivateKey privateKey = keyProvider.getPrivateKey();
 
         try {
             Signature signature = Signature.getInstance(properties.getAlgorithm());
             signature.initSign(privateKey);
-            signature.update(canonicalBytes);
-            return Base64.getEncoder().encodeToString(signature.sign());
+            signature.update(payloadBytes);
+            return signature.sign();
         } catch (GeneralSecurityException ex) {
             throw new SignatureException("Cannot sign payload", ex);
         }
