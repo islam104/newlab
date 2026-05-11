@@ -12,5 +12,35 @@ services:
       - newsem_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  minio:
+    image: minio/minio:latest
+    container_name: newsem-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio-root
+      MINIO_ROOT_PASSWORD: minio-root-password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - newsem_minio_data:/data
+    restart: unless-stopped
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: newsem-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 minio-root minio-root-password; do sleep 2; done &&
+      mc mb --ignore-existing local/malware-signatures &&
+      mc anonymous set none local/malware-signatures &&
+      (mc admin user add local newsem-service newsem-service-secret || true) &&
+      (mc admin policy attach local readwrite --user newsem-service || true)
+      "
+    restart: "no"
+
 volumes:
   newsem_postgres_data:
+  newsem_minio_data:

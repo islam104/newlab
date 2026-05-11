@@ -92,6 +92,64 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 ```
 
+## Загрузка сигнатур из файлов и MinIO
+
+Для файлов сигнатур используется приватный bucket в MinIO. Исходный файл сохраняется в object storage, а в БД хранится рассчитанная сигнатура и метаданные объекта.
+
+### Docker Compose
+
+```bash
+docker compose up -d
+```
+
+Поднимутся:
+- `postgres`
+- `minio`
+- `minio-init` для создания приватного bucket `malware-signatures`, сервисного пользователя `newsem-service` и выдачи ему policy `readwrite`
+
+### Переменные окружения для object storage
+
+- `STORAGE_ENDPOINT`
+- `STORAGE_ACCESS_KEY`
+- `STORAGE_SECRET_KEY`
+- `STORAGE_BUCKET`
+- `STORAGE_PRESIGNED_URL_EXPIRY_MINUTES`
+- `STORAGE_FIRST_BYTES_LENGTH`
+
+По умолчанию:
+
+```bash
+STORAGE_ENDPOINT=http://localhost:9000
+STORAGE_ACCESS_KEY=newsem-service
+STORAGE_SECRET_KEY=newsem-service-secret
+STORAGE_BUCKET=malware-signatures
+STORAGE_PRESIGNED_URL_EXPIRY_MINUTES=60
+STORAGE_FIRST_BYTES_LENGTH=16
+```
+
+### Новые malware API endpoints
+
+Все endpoints ниже доступны только пользователю с ролью `ADMIN`:
+
+- `POST /api/malware-signatures/upload`
+- `POST /api/malware-signatures/files/presigned-urls`
+- `GET /api/malware-signatures`
+- `GET /api/malware-signatures/increment`
+- `POST /api/malware-signatures/by-ids`
+- `GET /api/malware-signatures/{id}/history`
+- `GET /api/malware-signatures/{id}/audit`
+
+`POST /api/malware-signatures/upload` принимает `multipart/form-data`:
+- `file` - обязательный файл
+- `threatName` - необязательное имя угрозы
+
+Расчет сигнатуры по файлу выполняется так:
+- `firstBytesHex` - первые `STORAGE_FIRST_BYTES_LENGTH` байт файла
+- `remainderHashHex` - `SHA-256` от оставшейся части файла
+- `remainderLength` - длина оставшейся части
+- `offsetStart = 0`
+- `offsetEnd = длина сохраненного префикса - 1`
+
 ## HTTPS (TLS)
 
 Для TLS используется профиль `tls` и keystore в `./.secrets/tls/`.
